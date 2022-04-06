@@ -8609,7 +8609,7 @@ All at ###SITENAME###
 	}
 
 
-	// Customer REST API calls
+	// Custom REST API calls
 	add_action('rest_api_init', function () {
 		register_rest_route('v1/', '/get_custom_recent_posts', array(
 			'methods' => 'GET',
