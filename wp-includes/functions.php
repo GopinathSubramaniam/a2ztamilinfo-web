@@ -8609,7 +8609,7 @@ All at ###SITENAME###
 	}
 
 
-	// Custom REST API calls
+	// ============================= Custom REST API calls =============================
 	add_action('rest_api_init', function () {
 		register_rest_route('v1/', '/get_custom_recent_posts', array(
 			'methods' => 'GET',
@@ -8621,6 +8621,20 @@ All at ###SITENAME###
 		register_rest_route('v1/', '/get_custom_post_detail', array(
 			'methods' => 'GET',
 			'callback' => 'getCustomPostDetail',
+		));
+	});
+
+	add_action('rest_api_init', function () {
+		register_rest_route('v1/', '/send_push_notification', array(
+			'methods' => 'GET',
+			'callback' => 'push_notification_android1',
+		));
+	});
+
+	add_action('rest_api_init', function () {
+		register_rest_route('v1/', '/save_user', array(
+			'methods' => 'GET',
+			'callback' => 'saveUser',
 		));
 	});
 
@@ -8685,4 +8699,59 @@ All at ###SITENAME###
 		$ini += strlen($start);
 		$len = strpos($string, $end, $ini) - $ini;
 		return substr($string, $ini, $len);
+	}
+
+	function saveMobileToken()
+	{
+	}
+
+	function push_notification_and($title, $body)
+	{
+
+		$url = "https://fcm.googleapis.com/fcm/send";
+
+		// api key
+		$serverKey = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw'; // add api key here
+
+		$notification = array('title' => 'Welcome StackOverFlow', 'body' => 'Testing body', 'sound' => 'default', 'badge' => '1', 'type' => 1);
+		$data = array('data' => 'DomingoMG');
+
+		$arrayToSend = array('to' => '*', 'notification' => $notification, 'priority' => 'high', 'data' => $data);
+
+		$json = json_encode($arrayToSend);
+		$headers = array();
+		$headers[] = 'Content-Type: application/json';
+		$headers[] = 'Authorization: key=' . $serverKey;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+		//Send the request
+		$response = curl_exec($ch);
+		//Close request
+		if ($response === FALSE) {
+			die('FCM Send Error: ' . curl_error($ch));
+		}
+		curl_close($ch);
+	}
+
+	function saveUser()
+	{
+		require_once('wp-config.php');
+		global $wpdb;
+		$tablename = $wpdb->prefix . 'reg_users';
+		$obj = array(
+			'email' => "ASAS",
+			'password' => "ASAS",
+			'mobile' => "ASAS",
+			'token' => "ASAS",
+		);
+		$format = array('%s', '%s', '%s', '%s');
+		$wpdb->insert($tablename, $obj, $format);
+		$my_id = $wpdb->insert_id;
+		echo "Done. Inserted Id = " . $my_id;
 	}
