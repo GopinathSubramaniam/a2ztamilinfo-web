@@ -8627,7 +8627,7 @@ All at ###SITENAME###
 	add_action('rest_api_init', function () {
 		register_rest_route('v1/', '/send_push_notification', array(
 			'methods' => 'GET',
-			'callback' => 'push_notification_android1',
+			'callback' => 'push_notification_and',
 		));
 	});
 
@@ -8705,37 +8705,30 @@ All at ###SITENAME###
 	{
 	}
 
-	function push_notification_and($title, $body)
+
+	function push_notification_and()
 	{
-
-		$url = "https://fcm.googleapis.com/fcm/send";
-
-		// api key
-		$serverKey = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw'; // add api key here
-
+		$API_ACCESS_KEY = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw';
+		// $API_ACCESS_KEY = 'AIzaSyAHHBlp-ko5_0hjdZyXLOCDlouQnXTitQk';
+		$msg = array(
+			'msg' => 'OKOK'
+		);
 		$notification = array('title' => 'Welcome StackOverFlow', 'body' => 'Testing body', 'sound' => 'default', 'badge' => '1', 'type' => 1);
-		$data = array('data' => 'DomingoMG');
-
-		$arrayToSend = array('to' => '*', 'notification' => $notification, 'priority' => 'high', 'data' => $data);
-
-		$json = json_encode($arrayToSend);
-		$headers = array();
-		$headers[] = 'Content-Type: application/json';
-		$headers[] = 'Authorization: key=' . $serverKey;
+		$fields = array('to' => '/topics/alerts', 'notification' => $notification, 'data' => $msg);
+		$headers = array(
+			'Authorization: key=' . $API_ACCESS_KEY,
+			'Content-Type: application/json'
+		);
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-		//Send the request
-		$response = curl_exec($ch);
-		//Close request
-		if ($response === FALSE) {
-			die('FCM Send Error: ' . curl_error($ch));
-		}
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+		$pushResult = curl_exec($ch);
+		echo "DONE ===========";
+		print_r($pushResult);
 		curl_close($ch);
 	}
 
