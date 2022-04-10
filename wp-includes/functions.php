@@ -8609,7 +8609,7 @@ All at ###SITENAME###
 	}
 
 
-	// ============================= Custom REST API calls =============================
+	// ============================= Custom REST API actions =============================
 	add_action('rest_api_init', function () {
 		register_rest_route('v1/', '/get_custom_recent_posts', array(
 			'methods' => 'GET',
@@ -8640,6 +8640,8 @@ All at ###SITENAME###
 
 	add_action('wp_after_insert_post', 'send_notification', 90, 4);
 
+
+	// Custom API functions
 	function getCustomRecentPosts()
 	{
 		$pageNo = $_GET['pageNo'];
