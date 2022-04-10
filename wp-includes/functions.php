@@ -8638,6 +8638,8 @@ All at ###SITENAME###
 		));
 	});
 
+	add_action('wp_after_insert_post', 'send_notification', 90, 4);
+
 	function getCustomRecentPosts()
 	{
 		$pageNo = $_GET['pageNo'];
@@ -8706,32 +8708,6 @@ All at ###SITENAME###
 	}
 
 
-	function push_notification_and()
-	{
-		$API_ACCESS_KEY = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw';
-		// $API_ACCESS_KEY = 'AIzaSyAHHBlp-ko5_0hjdZyXLOCDlouQnXTitQk';
-		$msg = array(
-			'msg' => 'OKOK'
-		);
-		$notification = array('title' => 'Welcome StackOverFlow', 'body' => 'Testing body', 'sound' => 'default', 'badge' => '1', 'type' => 1);
-		$fields = array('to' => '/topics/alerts', 'notification' => $notification, 'data' => $msg);
-		$headers = array(
-			'Authorization: key=' . $API_ACCESS_KEY,
-			'Content-Type: application/json'
-		);
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-		$pushResult = curl_exec($ch);
-		echo "DONE ===========";
-		print_r($pushResult);
-		curl_close($ch);
-	}
-
 	function saveUser()
 	{
 		require_once('wp-config.php');
@@ -8747,4 +8723,41 @@ All at ###SITENAME###
 		$wpdb->insert($tablename, $obj, $format);
 		$my_id = $wpdb->insert_id;
 		echo "Done. Inserted Id = " . $my_id;
+	}
+
+
+	function send_notification($post_id, $post, $update, $post_before)
+	{
+		$obj = get_category_by_slug('notification');
+		$cats = get_the_category($post_id);
+		$catIds = array_column($cats, 'cat_ID');
+		if (in_array($obj->cat_ID, $catIds)) {
+			/* echo json_encode($post);
+			exit(); */
+
+			// Sending notification to all the registered users
+			$API_ACCESS_KEY = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw';
+			// $API_ACCESS_KEY = 'AIzaSyAHHBlp-ko5_0hjdZyXLOCDlouQnXTitQk';
+			$data = array(
+				'postId' => $post->ID,
+				'post_title' => $post->post_title
+			);
+			$notification = array('title' => $post->title, 'body' => $post->title, 'sound' => 'default', 'badge' => '1', 'type' => 1);
+			$fields = array('to' => '/topics/alerts', 'notification' => $notification, 'data' => $data);
+			$headers = array(
+				'Authorization: key=' . $API_ACCESS_KEY,
+				'Content-Type: application/json'
+			);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+			$pushResult = curl_exec($ch);
+			/* echo "DONE ===========";
+			print_r($pushResult); */
+			curl_close($ch);
+		}
 	}
