@@ -8642,7 +8642,6 @@ All at ###SITENAME###
 
 	add_action('wp_after_insert_post', 'send_notification', 90, 4);
 
-
 	// Custom API functions
 	function getCustomRecentPosts()
 	{
@@ -8732,72 +8731,75 @@ All at ###SITENAME###
 
 	function send_notification($post_id, $post, $update, $post_before)
 	{
-		// Getting 'notification' category by slug
-		$obj = get_category_by_slug('notification');
 
-		// Get selected categories by post id
-		$cats = get_the_category($post_id);
+		if (!(defined('REST_REQUEST') && REST_REQUEST)) {
+			// Getting 'notification' category by slug
+			$obj = get_category_by_slug('notification');
 
-		// Collecting all the notification ids only
-		$catIds = array_column($cats, 'cat_ID');
+			// Get selected categories by post id
+			$cats = get_the_category($post_id);
 
-		// Verifying whether notification id is exists or not
-		if (in_array($obj->cat_ID, $catIds)) {
-			/* echo json_encode($post);
-			exit(); */
+			// Collecting all the notification ids only
+			$catIds = array_column($cats, 'cat_ID');
 
-			// Sending notification to all the registered users
-			$API_ACCESS_KEY = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw';
-			$data = array(
-				'post_id' => $post->ID,
-				'post_title' => $post->post_title,
-				'post_categories' => $cats
-			);
+			// Verifying whether notification id is exists or not
+			if (in_array($obj->cat_ID, $catIds)) {
+				/* echo json_encode($post);
+					exit(); */
 
-			$notification = array('title' => $post->post_title, 'body' => '', 'sound' => 'default', 'badge' => '1', 'type' => 1);
-			$fields = array('to' => '/topics/alerts', 'notification' => $notification, 'data' => $data);
-			$headers = array(
-				'Authorization: key=' . $API_ACCESS_KEY,
-				'Content-Type: application/json;charset=UTF-8'
-			);
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-			$pushResult = curl_exec($ch);
-			/* echo "DONE ===========";
-			print_r($pushResult); */
-			curl_close($ch);
+				// Sending notification to all the registered users
+				$API_ACCESS_KEY = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw';
+				$data = array(
+					'post_id' => $post->ID,
+					'post_title' => $post->post_title,
+					'post_categories' => $cats
+				);
+
+				$notification = array('title' => $post->post_title, 'body' => '', 'sound' => 'default', 'badge' => '1', 'type' => 1);
+				$fields = array('to' => '/topics/alerts', 'notification' => $notification, 'data' => $data);
+				$headers = array(
+					'Authorization: key=' . $API_ACCESS_KEY,
+					'Content-Type: application/json;charset=UTF-8'
+				);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+				curl_setopt($ch, CURLOPT_POST, true);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+				$pushResult = curl_exec($ch);
+				/* echo "DONE ===========";
+					print_r($pushResult); */
+				curl_close($ch);
+			}
 		}
 	}
 
 	function send_notification_test()
 	{
-			// Sending notification to all the registered users
-			$API_ACCESS_KEY = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw';
-			$data = array(
-				'postId' => '1',
-				'post_title' => 'May 9 Is End | ரஷ்யா செய்யப்போகும் 5 விஷயங்கள்'
-			);
+		// Sending notification to all the registered users
+		$API_ACCESS_KEY = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw';
+		$data = array(
+			'postId' => '1',
+			'post_title' => 'May 9 Is End | ரஷ்யா செய்யப்போகும் 5 விஷயங்கள்'
+		);
 
-			$notification = array('title' => 'May 9 Is End | ரஷ்யா செய்யப்போகும் 5 விஷயங்கள்', 'body' => 'OKOKOKOKOK', 'sound' => 'default', 'badge' => '1', 'type' => 1);
-			// $notification = array('title' => 'TITLE', 'body' => 'POST POST', 'sound' => 'default', 'badge' => '1', 'type' => 1);
-			$fields = array('to' => '/topics/alerts', 'notification' => $notification, 'data' => $data);
-			$headers = array(
-				'Authorization: key=' . $API_ACCESS_KEY,
-				'Content-Type: application/json;charset=UTF-8'
-			);
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-			$pushResult = curl_exec($ch);
-			print_r($pushResult);
-			curl_close($ch);
+		$notification = array('title' => 'May 9 Is End | ரஷ்யா செய்யப்போகும் 5 விஷயங்கள்', 'body' => 'OKOKOKOKOK', 'sound' => 'default', 'badge' => '1', 'type' => 1);
+		// $notification = array('title' => 'TITLE', 'body' => 'POST POST', 'sound' => 'default', 'badge' => '1', 'type' => 1);
+		$fields = array('to' => '/topics/alerts', 'notification' => $notification, 'data' => $data);
+		$headers = array(
+			'Authorization: key=' . $API_ACCESS_KEY,
+			'Content-Type: application/json;charset=UTF-8'
+		);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+		$pushResult = curl_exec($ch);
+		print_r($pushResult);
+		curl_close($ch);
 	}
