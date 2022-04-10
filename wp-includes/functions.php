@@ -8730,21 +8730,29 @@ All at ###SITENAME###
 
 	function send_notification($post_id, $post, $update, $post_before)
 	{
+		// Getting 'notification' category by slug
 		$obj = get_category_by_slug('notification');
+
+		// Get selected categories by post id
 		$cats = get_the_category($post_id);
+
+		// Collecting all the notification ids only
 		$catIds = array_column($cats, 'cat_ID');
+
+		// Verifying whether notification id is exists or not
 		if (in_array($obj->cat_ID, $catIds)) {
 			/* echo json_encode($post);
 			exit(); */
 
 			// Sending notification to all the registered users
 			$API_ACCESS_KEY = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw';
-			// $API_ACCESS_KEY = 'AIzaSyAHHBlp-ko5_0hjdZyXLOCDlouQnXTitQk';
 			$data = array(
 				'postId' => $post->ID,
 				'post_title' => $post->post_title
 			);
-			$notification = array('title' => $post->title, 'body' => $post->title, 'sound' => 'default', 'badge' => '1', 'type' => 1);
+
+			// $notification = array('title' => $post->title, 'body' => $post->title, 'sound' => 'default', 'badge' => '1', 'type' => 1);
+			$notification = array('title' => 'TITLE', 'body' => 'POST POST', 'sound' => 'default', 'badge' => '1', 'type' => 1);
 			$fields = array('to' => '/topics/alerts', 'notification' => $notification, 'data' => $data);
 			$headers = array(
 				'Authorization: key=' . $API_ACCESS_KEY,
