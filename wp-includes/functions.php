@@ -8732,6 +8732,7 @@ All at ###SITENAME###
 	function send_notification($post_id, $post, $update, $post_before)
 	{
 
+		// Send notification only if the request is 'REST'
 		if (!(defined('REST_REQUEST') && REST_REQUEST)) {
 			// Getting 'notification' category by slug
 			$obj = get_category_by_slug('notification');
