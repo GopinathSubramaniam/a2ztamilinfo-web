@@ -8624,17 +8624,19 @@ All at ###SITENAME###
 		));
 	});
 
-	add_action('rest_api_init', function () {
-		register_rest_route('v1/', '/send_push_notification', array(
-			'methods' => 'GET',
-			'callback' => 'push_notification_and',
-		));
-	});
-
+	// Save users in 'td_reg_users' table
 	add_action('rest_api_init', function () {
 		register_rest_route('v1/', '/save_user', array(
 			'methods' => 'GET',
 			'callback' => 'saveUser',
+		));
+	});
+
+	// Save users in 'td_reg_users' table
+	add_action('rest_api_init', function () {
+		register_rest_route('v1/', '/send_notification_test', array(
+			'methods' => 'GET',
+			'callback' => 'send_notification_test',
 		));
 	});
 
@@ -8747,16 +8749,16 @@ All at ###SITENAME###
 			// Sending notification to all the registered users
 			$API_ACCESS_KEY = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw';
 			$data = array(
-				'postId' => $post->ID,
-				'post_title' => $post->post_title
+				'post_id' => $post->ID,
+				'post_title' => $post->post_title,
+				'post_categories' => $cats
 			);
 
-			// $notification = array('title' => $post->title, 'body' => $post->title, 'sound' => 'default', 'badge' => '1', 'type' => 1);
-			$notification = array('title' => 'TITLE', 'body' => 'POST POST', 'sound' => 'default', 'badge' => '1', 'type' => 1);
+			$notification = array('title' => $post->post_title, 'body' => '', 'sound' => 'default', 'badge' => '1', 'type' => 1);
 			$fields = array('to' => '/topics/alerts', 'notification' => $notification, 'data' => $data);
 			$headers = array(
 				'Authorization: key=' . $API_ACCESS_KEY,
-				'Content-Type: application/json'
+				'Content-Type: application/json;charset=UTF-8'
 			);
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
@@ -8770,4 +8772,32 @@ All at ###SITENAME###
 			print_r($pushResult); */
 			curl_close($ch);
 		}
+	}
+
+	function send_notification_test()
+	{
+			// Sending notification to all the registered users
+			$API_ACCESS_KEY = 'AAAAss-REbc:APA91bFnW5gmB72dfEJ0hFv8P1wNveLEBsvluH_nDr0xFf3k7IY7MECCPridhhE9DsO8EbZiYT699Yu1reR46W1lUnfBfEnB1LWNljuoOvXlCnShfUgiCM0HZp-R6d2FePzMN4kBG_Iw';
+			$data = array(
+				'postId' => '1',
+				'post_title' => 'May 9 Is End | ரஷ்யா செய்யப்போகும் 5 விஷயங்கள்'
+			);
+
+			$notification = array('title' => 'May 9 Is End | ரஷ்யா செய்யப்போகும் 5 விஷயங்கள்', 'body' => 'OKOKOKOKOK', 'sound' => 'default', 'badge' => '1', 'type' => 1);
+			// $notification = array('title' => 'TITLE', 'body' => 'POST POST', 'sound' => 'default', 'badge' => '1', 'type' => 1);
+			$fields = array('to' => '/topics/alerts', 'notification' => $notification, 'data' => $data);
+			$headers = array(
+				'Authorization: key=' . $API_ACCESS_KEY,
+				'Content-Type: application/json;charset=UTF-8'
+			);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+			$pushResult = curl_exec($ch);
+			print_r($pushResult);
+			curl_close($ch);
 	}
