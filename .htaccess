@@ -4,26 +4,26 @@
 # dynamically generated, and should only be modified via WordPress filters.
 # Any changes to the directives between these markers will be overwritten.
 
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-RewriteBase /a2ztamilinfo-web/
-RewriteRule ^index\.php$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /a2ztamilinfo-web/index.php [L]
-</IfModule>
-
-
-
 # <IfModule mod_rewrite.c>
 # RewriteEngine On
 # RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-# RewriteBase /tamilpedia/
+# RewriteBase /a2ztamilinfo-web/
 # RewriteRule ^index\.php$ - [L]
 # RewriteCond %{REQUEST_FILENAME} !-f
 # RewriteCond %{REQUEST_FILENAME} !-d
-# RewriteRule . /tamilpedia/index.php [L]
+# RewriteRule . /a2ztamilinfo-web/index.php [L]
 # </IfModule>
+
+
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /tamilpedia/
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /tamilpedia/index.php [L]
+</IfModule>
 
 # END WordPress

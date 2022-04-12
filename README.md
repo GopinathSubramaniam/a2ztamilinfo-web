@@ -18,3 +18,5 @@ UPDATE td_postmeta SET meta_value = REPLACE(meta_value, 'http://localhost/', 'ht
 
 #### Copy content to server
 scp -r -oHostKeyAlgorithms=+ssh-dss tamilpedia.zip fullsm3q@103.195.185.187:/home4/fullsm3q/public_html/
+
+##### Update the .htaccess file to load the files from the correct location
